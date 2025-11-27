@@ -12,31 +12,35 @@ export class ChargeService {
         private readonly chargeRepository: Repository<Charge>,
     ) {}
 
-    async create(createChargeDto: CreateChargeDto): Promise<Charge> {
-        const charge = this.chargeRepository.create(createChargeDto);
+    async create(createChargeDto: CreateChargeDto, userId: string): Promise<Charge> {
+        const charge = this.chargeRepository.create({
+            ...createChargeDto,
+            userId, // Asignar automáticamente el userId del token
+        });
         return await this.chargeRepository.save(charge);
     }
 
-    async findAll(): Promise<Charge[]> {
-        return await this.chargeRepository.find();
+    async findAll(userId: string): Promise<Charge[]> {
+        // Filtrar cargos solo del usuario autenticado
+        return await this.chargeRepository.find({ where: { userId } });
     }
 
-    async findOne(id: string): Promise<Charge> {
-        const charge = await this.chargeRepository.findOne({ where: { id } });
+    async findOne(id: string, userId: string): Promise<Charge> {
+        const charge = await this.chargeRepository.findOne({ where: { id, userId } });
         if (!charge) {
-            throw new NotFoundException(`Charge with ID ${id} not found`);
+            throw new NotFoundException(`Charge with ID ${id} not found or you don't have access to it`);
         }
         return charge;
     }
 
-    async update(id: string, updateChargeDto: UpdateChargeDto): Promise<Charge> {
-        const charge = await this.findOne(id);
+    async update(id: string, updateChargeDto: UpdateChargeDto, userId: string): Promise<Charge> {
+        const charge = await this.findOne(id, userId);
         Object.assign(charge, updateChargeDto);
         return await this.chargeRepository.save(charge);
     }
 
-    async remove(id: string): Promise<void> {
-        const charge = await this.findOne(id);
+    async remove(id: string, userId: string): Promise<void> {
+        const charge = await this.findOne(id, userId);
         await this.chargeRepository.remove(charge);
     }
 }
