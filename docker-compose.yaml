@@ -1,9 +1,10 @@
 services:
    postgres:
       image: postgres:15-alpine
+      restart: always
       container_name: postgres
       ports:
-         - "5432:5432"
+         - "5438:5432"
       environment:
          - POSTGRES_USER=postgres
          - POSTGRES_PASSWORD=postgres
@@ -12,4 +13,21 @@ services:
          - postgres_data:/var/lib/postgresql/data
       networks:
          - backend
-   
+
+   pgadmin:
+      image: dpage/pgadmin4
+      container_name: pgadmin
+      ports:
+         - "5050:80"
+      environment:
+         - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+         - PGADMIN_DEFAULT_PASSWORD=admin
+      networks:
+         - backend
+
+networks:
+   backend:
+      driver: bridge
+
+volumes:
+   postgres_data:

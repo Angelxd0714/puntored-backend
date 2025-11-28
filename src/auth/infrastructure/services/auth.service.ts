@@ -7,7 +7,7 @@ import { RegisterDto } from '@/auth/application/dtos/register.dto';
 export class AuthService {
   constructor(private readonly loginUseCase: LoginUseCase,
     private readonly registerUseCase: RegisterUseCase
-  ) {}
+  ) { }
 
   async login(loginDto: LoginDto) {
     return this.loginUseCase.execute(loginDto);

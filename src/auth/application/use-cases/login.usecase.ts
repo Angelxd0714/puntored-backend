@@ -1,12 +1,12 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import type { UserRepository } from "../interfaces/repository.interfaces";
+import { UserRepositoryImpl } from "../interfaces/repositoryImpl";
 import { LoginDto } from "../dtos/login.dto";
 import { JwtService } from "@nestjs/jwt";
 import { AuthDomainService } from "@/auth/domain/services/auth-domain.service";
 @Injectable()
 export class LoginUseCase {
     constructor(
-        private readonly userRepository: UserRepository,
+        private readonly userRepository: UserRepositoryImpl,
     private readonly authDomainService: AuthDomainService,
         private readonly jwtService: JwtService,
     ) {}
@@ -16,7 +16,7 @@ export class LoginUseCase {
         if (!user) {
             throw new UnauthorizedException('Invalid credentials');
         }
-        const isPasswordValid = await this.authDomainService.validateUserPassword(user, loginDto.password);
+        const isPasswordValid = await this.authDomainService.validateCredentials(loginDto, user);
         if (!isPasswordValid) {
             throw new UnauthorizedException('Invalid credentials');
         }

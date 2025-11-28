@@ -1,13 +1,13 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { RegisterDto } from "../dtos/register.dto";
 import { JwtService } from "@nestjs/jwt";
-import * as repositoryInterfaces from "../interfaces/repository.interfaces";
+import { UserRepositoryImpl } from "../interfaces/repositoryImpl";
 import { PasswordService } from "@/common/utils/password.service";
 import { User } from "@/auth/domain/entities/user.entity";
 @Injectable()
 export class RegisterUseCase {
     constructor(
-        private readonly userRepository: repositoryInterfaces.UserRepository,
+        private readonly userRepository: UserRepositoryImpl,
         private readonly jwtService: JwtService,
     ) {}
 

@@ -15,7 +15,7 @@ export class ChargeService {
     async create(createChargeDto: CreateChargeDto, userId: string): Promise<Charge> {
         const charge = this.chargeRepository.create({
             ...createChargeDto,
-            userId, // Asignar automáticamente el userId del token
+            userId, 
         });
         return await this.chargeRepository.save(charge);
     }

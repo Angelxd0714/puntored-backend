@@ -6,32 +6,32 @@ import { JwtAuthGuard } from '@/auth/infrastructure/guards/jwt-auth.guard';
 import { GetUser } from '@/auth/infrastructure/decorators/get-user.decorator';
 import type { JwtUser } from '@/auth/domain/interfaces/jwt-user.interface';
 
-@Controller('charges')
+@Controller('recharges')
 @UseGuards(JwtAuthGuard)
 export class ChargeController {
     constructor(private readonly chargeService: ChargeService) {}
 
-    @Post()
+    @Post("/history")
     create(@Body() createChargeDto: CreateChargeDto, @GetUser() user: JwtUser) {
         return this.chargeService.create(createChargeDto, user.userId);
     }
 
-    @Get()
+    @Get("/history")
     findAll(@GetUser() user: JwtUser) {
         return this.chargeService.findAll(user.userId);
     }
 
-    @Get(':id')
+    @Get("/history/:id")
     findOne(@Param('id') id: string, @GetUser() user: JwtUser) {
         return this.chargeService.findOne(id, user.userId);
     }
 
-    @Put(':id')
+    @Put("/history/:id")
     update(@Param('id') id: string, @Body() updateChargeDto: UpdateChargeDto, @GetUser() user: JwtUser) {
         return this.chargeService.update(id, updateChargeDto, user.userId);
     }
 
-    @Delete(':id')
+    @Delete("/history/:id")
     remove(@Param('id') id: string, @GetUser() user: JwtUser) {
         return this.chargeService.remove(id, user.userId);
     }
