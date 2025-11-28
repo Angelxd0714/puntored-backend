@@ -25,11 +25,67 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Project setup
+## Architecture
+
+The project is built upon a layered architecture inspired by **Domain-Driven Design (DDD)**, which helps maintain a clean separation of concerns and enhances maintainability. The key layers are:
+
+- **Domain**: Contains the core business logic, entities, and value objects. This layer is independent of any external frameworks.
+- **Application**: Orchestrates the domain logic through use cases or services. It acts as an intermediary between the infrastructure and the domain.
+- **Infrastructure**: Handles external concerns such as controllers, database access, and message brokers. It depends on the application layer.
+
+This structure promotes a modular, scalable, and testable codebase.
+
+## Project Structure
+
+The project is organized into the following directories:
+
+- **`src/auth`**: Handles user authentication, including JWT generation and validation.
+- **`src/charges`**: Manages mobile recharges, applying business rules and storing transactions.
+- **`src/notifications`**: Responsible for sending notifications after a successful recharge, using an event-driven approach with RabbitMQ.
+- **`src/common`**: Contains shared modules, guards, and utilities used across the application.
+- **`src/database`**: Manages the database connection and configuration.
+
+## Startup Process
+
+To get the project running, follow these steps:
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- [pnpm](https://pnpm.io/)
+- [Docker](https://www.docker.com/)
+
+### 1. Set up the Environment
+
+The project relies on Docker to run the database (PostgreSQL) and the message broker (RabbitMQ).
 
 ```bash
-$ pnpm install
+docker-compose up -d
 ```
+
+### 2. Install Dependencies
+
+```bash
+pnpm install
+```
+
+### 3. Run the Application
+
+```bash
+# Development mode
+pnpm run start:dev
+```
+
+The API will be available at `http://localhost:3000`.
+
+## Event-Driven Architecture with RabbitMQ
+
+The application uses **RabbitMQ** as a message broker to handle asynchronous communication between services. This design enhances scalability and resilience by decoupling the core services from secondary operations like notifications.
+
+- **`NOTIFICATIONS_SERVICE`**: This service listens for events (e.g., `RechargeSucceeded`) and sends notifications to users.
+- **Event Flow**: When a recharge is successfully processed, an event is published to a RabbitMQ queue. The `notifications` service consumes this event and executes the corresponding action.
+
+This approach ensures that even if the notification service is temporarily unavailable, the event remains in the queue and can be processed later.
 
 ## Compile and run the project
 
