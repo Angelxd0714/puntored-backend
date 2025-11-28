@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 import { z } from "zod";
 
@@ -8,9 +9,11 @@ const loginDtoSchema = z.object({
 
 export class LoginDto {
     static schema = loginDtoSchema;
+    @ApiProperty({ example: 'pepito' })
     @IsString()
     @IsNotEmpty({ message: 'Username is required' })
     username: string;
+    @ApiProperty({ example: '212323' })
     @IsString()
     @IsNotEmpty({ message: 'Password is required' })
     password: string;

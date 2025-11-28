@@ -14,17 +14,6 @@ services:
       networks:
          - backend
 
-   pgadmin:
-      image: dpage/pgadmin4
-      container_name: pgadmin
-      ports:
-         - "5050:80"
-      environment:
-         - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-         - PGADMIN_DEFAULT_PASSWORD=admin
-      networks:
-         - backend
-
 networks:
    backend:
       driver: bridge

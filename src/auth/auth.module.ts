@@ -9,7 +9,7 @@ import { AuthDomainService } from './domain/services/auth-domain.service';
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 import { JWT_CONSTANTS } from '@/common/constants';
 import { RegisterUseCase } from './application/use-cases/register.usecase';
-import { UserRepositoryImpl } from './application/interfaces/repositoryImpl';
+import { UserRepositoryImpl } from './application/interfaces/repository.Impl';
 
 @Module({
   imports: [
