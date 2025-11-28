@@ -3,7 +3,7 @@ import { DeleteResult, UpdateResult } from "typeorm";
 
 
 export interface ChargeRepository {
-    save(charge: Charge): Promise<Charge>;
+    save(charge: Charge, userId: string): Promise<Charge>;
     findAll(userId: string): Promise<Charge[]>;
     findById(id: string): Promise<Charge | null>;
     update(id: string, chargeData: Partial<Charge>): Promise<Charge>;

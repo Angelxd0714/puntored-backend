@@ -1,24 +1,21 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsNumber, IsString, Min, Matches } from 'class-validator';
-import z from 'zod';
-
-const validate = z.object({
-    phoneNumber: z.string().regex(/^(\+57)?3\d{9}$/),
-    amount: z.number().min(0),
-    description: z.string(),
-});
+import { Transform } from "class-transformer";
+import { IsNotEmpty, IsNumber, IsString, Min, Max, Matches } from 'class-validator';
 
 export class CreateChargeDto {
-    schema = validate;
     @IsString()
     @ApiProperty({ example: '3001234567' })
     @IsNotEmpty()
-    @Matches(/^\+?57\d{9}$/, { message: 'El número de teléfono debe ser un número móvil colombiano válido (ej: 3001234567 o +573001234567)' })
+    @Transform(({ value }) => value?.toString().replace(/\s+/g, ''))
+    @Matches(/^(\+?57)?[3-9]\d{9}$/, {
+        message: 'Número móvil colombiano inválido. Use: 3001234567 o +573001234567'
+    })
     phoneNumber: string;
 
     @IsNumber()
-    @ApiProperty({ example: '10000' })
-    @Min(0)
+    @ApiProperty({ example: 10000 })
+    @Min(1000, { message: 'El monto debe ser mayor o igual a 1000' })
+    @Max(1000000, { message: 'El monto debe ser menor o igual a 1000000' })
     @IsNotEmpty()
     amount: number;
 
@@ -27,4 +24,3 @@ export class CreateChargeDto {
     @IsNotEmpty()
     description: string;
 }
-

@@ -9,7 +9,8 @@ export class ChargeRepositoryImpl implements ChargeRepository {
         @InjectRepository(Charge)
         private readonly chargeRepository: Repository<Charge>
     ) { }
-    save(charge: Charge): Promise<Charge> {
+    save(charge: Charge, userId: string): Promise<Charge> {
+        charge.userId = userId;
         return this.chargeRepository.save(charge);
     }
     findAll(userId: string): Promise<Charge[]> {

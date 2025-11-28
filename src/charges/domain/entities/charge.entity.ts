@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { ChargeStatus } from "./enums/types.enum";
 
 @Entity('Charge')
 export class Charge {
@@ -14,8 +15,8 @@ export class Charge {
     @Column()
     description: string;
 
-    @Column({ default: 'pending' })
-    status: string;
+    @Column({ type: 'enum', enum: ChargeStatus, default: ChargeStatus.PENDING })
+    status: ChargeStatus;
 
     @Column({ nullable: true })
     userId: string;
@@ -26,3 +27,5 @@ export class Charge {
     @UpdateDateColumn()
     updatedAt: Date;
 }
+export { ChargeStatus };
+

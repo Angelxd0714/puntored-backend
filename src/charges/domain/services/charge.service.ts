@@ -1,23 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Charge } from '../entities/charge.entity';
 import { CreateChargeDto } from '../../application/dtos/create-charge.dto';
 import { UpdateChargeDto } from '../../application/dtos/update-charge.dto';
-import { ChargeUseCase } from '@/charges/application/use-cases/charge.usecase';
-
+import { ChargeRepositoryImpl } from '@/charges/application/interfaces/repository.impl';
+import { Inject } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { ChargeStatus } from '../entities/enums/types.enum';
 @Injectable()
 export class ChargeService {
     constructor(
-        private readonly chargeRepository: ChargeUseCase,
+        private readonly chargeRepository: ChargeRepositoryImpl,
+        @Inject('NOTIFICATIONS_SERVICE')
+        private readonly notificationsClient: ClientProxy,
     ) { }
 
     async create(createChargeDto: CreateChargeDto, userId: string): Promise<Charge> {
-        const charge = await this.create(
-            createChargeDto,
-            userId
-        )
-        return charge;
+        const charge = new Charge();
+        charge.phoneNumber = createChargeDto.phoneNumber;
+        charge.amount = createChargeDto.amount;
+        charge.description = createChargeDto.description;
+        charge.userId = userId;
+        charge.status = ChargeStatus.PENDING;
+        const savedCharge = await this.chargeRepository.save(charge, userId);
+        this.notificationsClient.emit('charge.created', savedCharge).subscribe();
+        return savedCharge;
     }
 
     async findAll(userId: string): Promise<Charge[]> {
