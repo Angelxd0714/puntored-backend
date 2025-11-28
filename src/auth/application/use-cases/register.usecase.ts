@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, BadRequestException } from "@nestjs/common";
 import { RegisterDto } from "../dtos/register.dto";
 import { JwtService } from "@nestjs/jwt";
 import { UserRepositoryImpl } from "../interfaces/repository.Impl";
@@ -14,7 +14,7 @@ export class RegisterUseCase {
     async execute(registerDto: RegisterDto) {
         const existingUser = await this.userRepository.findByUsername(registerDto.username);
         if (existingUser) {
-            throw new UnauthorizedException('Username already exists');
+            throw new BadRequestException('Username already exists');
         }
 
         const hashedPassword = await PasswordService.hashPassword(registerDto.password);

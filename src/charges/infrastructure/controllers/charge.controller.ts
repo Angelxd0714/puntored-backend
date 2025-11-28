@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ChargeService } from '../../domain/services/charge.service';
 import { CreateChargeDto } from '../../application/dtos/create-charge.dto';
 import { UpdateChargeDto } from '../../application/dtos/update-charge.dto';
 import { JwtAuthGuard } from '@/auth/infrastructure/guards/jwt-auth.guard';
 import { GetUser } from '@/auth/infrastructure/decorators/get-user.decorator';
 import type { JwtUser } from '@/auth/domain/interfaces/jwt-user.interface';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiNoContentResponse, ApiTags } from '@nestjs/swagger';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 @ApiTags('recharges')
 @Controller('recharges')
@@ -47,11 +47,14 @@ export class ChargeController {
         return this.chargeService.update(id, updateChargeDto, user.userId);
     }
 
-    @Delete("/:id")
+    @Delete(':id')
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Eliminar una recarga' })
     @ApiResponse({ status: 200, description: 'Recarga eliminada exitosamente' })
-    remove(@Param('id') id: string) {
-        return this.chargeService.remove(id);
+    @ApiNoContentResponse()
+    async remove(@Param('id') id: string): Promise<{ message: string }> {
+        await this.chargeService.remove(id);
+        return { message: 'Recarga eliminada exitosamente' };
     }
+
 }
